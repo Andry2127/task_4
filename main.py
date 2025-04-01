@@ -59,6 +59,25 @@ async def update_param_product(param: str,product_id: int, value: Union[str, flo
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
            
 
+
+
+@app.delete("/product/",status_code=status.HTTP_200_OK)
+async def delete_product(product:ProductModel):
+    products_data.remove(product.dict())
+    return dict(msg = "Видалено" )
+
+
+@app.delete("/products/{product_id}/", response_model=ProductModel, status_code=status.HTTP_200_OK)
+async def delete_product(product_id: int):
+    product = next((product for product in products_data if product["id"] == product_id), None)
+    if product:
+        products_data.remove(product) 
+        return product
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+
+
+
 if __name__ == "__main__":
     uvicorn.run("main:app")
 
